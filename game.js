@@ -36,15 +36,15 @@ export default class MainScene extends Phaser.Scene {
         this.background.setPosition(gameWidth / 2, gameHeight / 2);
 
         // Hacer la imagen de fondo más oscura
-        this.background.setAlpha(0.5);  // Ajusta este valor según lo oscuro que quieras el fondo
+        this.background.setAlpha(0.4);  // Ajusta este valor según lo oscuro que quieras el fondo
 
         // Crear la pala
-        this.paddle = this.add.rectangle(400, 550, 50, 200, 0x3aaddc).setDisplaySize(100, 20);
+        this.paddle = this.add.rectangle(400, 550, 50, 200, 0xfff1e8).setDisplaySize(100, 20);
         this.physics.add.existing(this.paddle);
         this.paddle.body.setImmovable(true);
 
         // Crear la pelota
-        this.circle = this.add.circle(400, 300, 8, 0xdadc3a, 1.0).setDisplaySize(20, 20);
+        this.circle = this.add.circle(400, 300, 8, 0xffec27, 1.0).setDisplaySize(20, 20);
         this.physics.add.existing(this.circle);
         this.circle.body.setCollideWorldBounds(true);
         this.circle.body.setBounce(1, 1);
@@ -53,7 +53,7 @@ export default class MainScene extends Phaser.Scene {
         // Ajustar para que la pelota no rebote en el borde inferior
         this.physics.world.setBoundsCollision(true, true, true, false);  // Rebotes solo en los lados y la parte superior
 
-        // Crear una matriz de ladrillos
+        // Crear una matriz de ladrillos con colores armoniosos
         this.bricks = this.physics.add.staticGroup();
         const brickRows = 5;
         const brickCols = 8;
@@ -62,11 +62,15 @@ export default class MainScene extends Phaser.Scene {
         const offsetX = 100;
         const offsetY = 50;
 
+        // Colores para los ladrillos
+        const colors = [0xff77a8, 0xff9d81, 0xf3ef7d];
+
         for (let row = 0; row < brickRows; row++) {
             for (let col = 0; col < brickCols; col++) {
                 let brickX = offsetX + col * (brickWidth + 10);
                 let brickY = offsetY + row * (brickHeight + 10);
-                let brick = this.add.rectangle(brickX, brickY, brickWidth, brickHeight, 0xe572e7);
+                let colorIndex = (row * brickCols + col) % colors.length;
+                let brick = this.add.rectangle(brickX, brickY, brickWidth, brickHeight, colors[colorIndex]);
                 this.bricks.add(brick);
             }
         }
@@ -85,7 +89,7 @@ export default class MainScene extends Phaser.Scene {
         // Texto para mostrar al perder
         this.gameOverText = this.add.text(halfwidth, halfheight, 'Game Over\nClick to Restart', {
             fontSize: '32px',
-            color: '#ffffff',
+            color: '#fff1e8',
             align: 'center'
         });
         this.gameOverText.setOrigin(0.5);
@@ -93,8 +97,8 @@ export default class MainScene extends Phaser.Scene {
 
         // Texto para mostrar el puntaje
         this.scoreText = this.add.text(16, 16, 'Score: 0', {
-            fontSize: '20px',
-            color: '#ffffff',
+            fontSize: '18px',
+            color: '#fff1e8',
             align: 'left'
         });
 
