@@ -17,34 +17,40 @@ export default class MainScene extends Phaser.Scene {
 
         // Añadir la imagen de fondo
         this.background = this.add.image(halfwidth, halfheight, 'background');
-        
+
         // Obtener las dimensiones del juego
         const gameWidth = this.game.config.width;
         const gameHeight = this.game.config.height;
 
-        // Calcular la escala de la imagen manteniendo la proporción
+        // Ajustar el tamaño de la imagen de fondo para que cubra toda la pantalla
+        this.background.setOrigin(0.5, 0.5);
+
+        // Ajustar el tamaño de la imagen para mantener la relación de aspecto original
         const bgWidth = this.background.width;
         const bgHeight = this.background.height;
-        const scaleX = gameWidth / bgWidth;
-        const scaleY = gameHeight / bgHeight;
-        const scale = Math.max(scaleX, scaleY);
 
-        // Aplicar la escala calculada
-        this.background.setScale(scale).setScrollFactor(0);
+        const scale = Math.max(gameWidth / bgWidth, gameHeight / bgHeight);
+        const newWidth = bgWidth * scale;
+        const newHeight = bgHeight * scale;
 
-        // Centrar la imagen en la pantalla
-        this.background.setPosition(gameWidth / 2, gameHeight / 2);
+        this.background.setDisplaySize(newWidth, newHeight);
+        this.background.setPosition(halfwidth, halfheight);
+        this.background.setScrollFactor(0);
+
+        // Recortar la imagen para ajustarla al lienzo del juego
+        this.cameras.main.setViewport(0, 0, gameWidth, gameHeight);
+        this.cameras.main.setBounds(0, 0, newWidth, newHeight);
 
         // Hacer la imagen de fondo más oscura
-        this.background.setAlpha(0.4);  // Ajusta este valor según lo oscuro que quieras el fondo
+        this.background.setAlpha(0.5);  // Ajusta este valor según lo oscuro que quieras el fondo
 
         // Crear la pala
-        this.paddle = this.add.rectangle(400, 550, 50, 200, 0xfff1e8).setDisplaySize(100, 20);
+        this.paddle = this.add.rectangle(400, 550, 50, 200, 0x29adff).setDisplaySize(100, 20);
         this.physics.add.existing(this.paddle);
         this.paddle.body.setImmovable(true);
 
         // Crear la pelota
-        this.circle = this.add.circle(400, 300, 8, 0xffec27, 1.0).setDisplaySize(20, 20);
+        this.circle = this.add.circle(400, 300, 8, 0xa8e72e, 1.0).setDisplaySize(20, 20);
         this.physics.add.existing(this.circle);
         this.circle.body.setCollideWorldBounds(true);
         this.circle.body.setBounce(1, 1);
@@ -89,6 +95,8 @@ export default class MainScene extends Phaser.Scene {
         // Texto para mostrar al perder
         this.gameOverText = this.add.text(halfwidth, halfheight, 'Game Over\nClick to Restart', {
             fontSize: '32px',
+            fontFamily: 'Arial', // Usa una fuente que soporte negrita
+            fontStyle: 'bold', // Estilo en negrita
             color: '#fff1e8',
             align: 'center'
         });
@@ -98,6 +106,8 @@ export default class MainScene extends Phaser.Scene {
         // Texto para mostrar el puntaje
         this.scoreText = this.add.text(16, 16, 'Score: 0', {
             fontSize: '18px',
+            fontFamily: 'Arial', // Usa una fuente que soporte negrita
+            fontStyle: 'bold', // Estilo en negrita
             color: '#fff1e8',
             align: 'left'
         });
